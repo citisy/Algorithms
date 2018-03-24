@@ -18,6 +18,7 @@ class Node():
         '''
         return str(self.data)
 
+
 class LinkList():
     '''
     functions：
@@ -30,6 +31,7 @@ class LinkList():
         update(pos, item): 更新第pos个结点
         insert(pos, item): 在pos位置后插入元素
         append(item): 单链表结尾添加一个元素
+        sort(): 对单链表进行排序
         delete(pos): 删除第pos个元素
         clear(): 清空单链表
     '''
@@ -153,6 +155,33 @@ class LinkList():
                 p = p.next
             p.next = newp
 
+    # 对单链表进行排序
+    # 使用直接插入排序，从小到大排序
+    def sort(self):
+        if self.is_empty() or self.lenth() == 1:
+            return self.head
+        xp = self.head
+        cp = xp.next  # 待比较元素
+        while cp:
+            p = self.head
+            q = None
+            while p is not cp and p.data < cp.data:  # 依次往后比较
+                q = p
+                p = p.next
+            if p is cp:
+                xp = cp  # 待比较元素较大，后移一位
+            else:
+                xp.next = cp.next  # 弹出cp结点
+                # 待比较元素插入到q后面
+                cp.next = p  # cp指针指向p
+                # q指针指向cp
+                if q is None:
+                    self.head = cp
+                else:
+                    q.next = cp
+            cp = xp.next
+        return print('sort successfully!')
+
     # 删除第pos个元素
     def delete(self, pos):
         # 判断pos是否符合要求
@@ -202,6 +231,8 @@ if __name__ == '__main__':
     link.update(3, 5)
     link.delete(4)
     link.insert(3, 7)
+    link.traverse()
+    link.sort()
     link.traverse()
     link.clear()
     print(link.is_empty())
