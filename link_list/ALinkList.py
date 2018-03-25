@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# 创建一个保存data和head的对象，模拟单链表
+# 创建一个保存data和next的对象，模拟单链表
 
 
 class Node():
@@ -50,6 +50,7 @@ class LinkList():
             for i in data[1:]:
                 p.next = Node(i)
                 p = p.next  # 结点指针指向下一结点
+        return print('init successfully!')
 
     # 返回单链表长度
     def lenth(self):

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from ALinkList import Node
 from ALinkList import LinkList
 
 
