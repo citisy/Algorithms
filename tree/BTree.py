@@ -2,6 +2,22 @@
 
 # 根据数组创建一个应用双链表的二叉树
 
+'''
+二叉树的种类：
+    满二叉树：每一层都是满的
+    完全二叉树：除最后一层或包括最后一层，其余层全满，最后一层在右边缺若干个结点
+    理想平衡二叉树：除最后一层或包括最后一层，其余层全满，最后一层的结点任意分布
+种类包含情况：
+    理想平衡二叉树>完全二叉树>满二叉树
+二叉树的一些特征：
+    叶子结点n0，单分支n1，双分支n2
+        => n0+n1+n2=n1+2n2+1
+        => n0=n2+1
+        => 叶子结点比双分支结点多1个
+    根结点：i 左孩子：2i 右孩子：2i+1
+    n个结点的完全二叉树的深度：lb(n)+1（下取整）
+'''
+
 import sys
 sys.path.append('../link_list')
 from BLinkList import BNode
@@ -11,12 +27,14 @@ class BTree(BLinkList):
     '''
     functions：
         init(arr): 初始化树
+        print_(bn): 打印出二叉树的广义表
         inorder(bn): 中序遍历
         preorder(bn): 前序遍历
         postorder(bn): 后序遍历
         depth(bn): 返回树的深度
         find(item, bn): 查找某一元素是否存在
         get_bn(): 获取当前结点
+        update(item, change_item, bn): 更新一个结点
     '''
 
     # 初始化树
@@ -44,6 +62,25 @@ class BTree(BLinkList):
                     p[i] = p[i // 2].right
         return print('init successfully!')
 
+    # 打印出二叉树的广义表
+    # 根本思想为前序遍历
+    def print_(self, bn):
+        '''
+        :param bn: 根结点
+        '''
+        if bn and bn.data != '':
+            print(bn.data, end='')
+            if (bn.left and bn.left.data != '') or (bn.right and bn.right.data != ''):
+                # 存在左或右孩子时打印'('
+                print('(', end='')
+                self.print_(bn.left)
+                # 存在右孩子时打印','
+                if bn.right and bn.right.data != '':
+                    print(',', end='')
+                    self.print_(bn.right)
+                # 左右孩子都遍历完，打印')'
+                print(')', end='')
+
     # 中序遍历
     # 先访问左孩子，再打印根结点，最后访问右孩子
     def inorder(self, bn):
@@ -55,7 +92,7 @@ class BTree(BLinkList):
             print(bn, end=' ')
             self.inorder(bn.right)
 
-    # 前序遍历
+    # 前序遍历（深度优先）
     # 先打印根结点，再依次访问左右孩子
     def preorder(self, bn):
         '''
@@ -77,7 +114,7 @@ class BTree(BLinkList):
             self.postorder(bn.right)
             print(bn, end=' ')
 
-    # 按层遍历
+    # 按层遍历（广度优先）
     # 队列思想，根结点先入队，其附属左右孩子依次入队，最后按出队顺序打印即可
     def levelorder(self, bn):
         '''
@@ -144,6 +181,12 @@ class BTree(BLinkList):
     def get_bn(self):
         return self.bn
 
+    # 更新一个结点
+    def update(self, item, change_item, bn):
+        self.find(item, bn)
+        self.bn.data = change_item
+
+
 if __name__ == '__main__':
     a = ['' for _ in range(15)]
     item = ['flag', 'a', 'b', 'e', 'c', 'd', 'f', 'g']
@@ -154,6 +197,9 @@ if __name__ == '__main__':
         k += 1
     bt = BTree()
     bt.init(a)
+    print('广义表示：', end=' ')
+    bt.print_(bt.mid)
+    print()
     print('前序遍历:', end=' ')
     bt.preorder(bt.mid)
     print()
@@ -167,7 +213,10 @@ if __name__ == '__main__':
     bt.levelorder(bt.mid)
     print()
     print('树的深度为： ', bt.depth(bt.mid))
-    # print(bt.is_empty())
     bt.find('g', bt.mid)
     bn = bt.get_bn()
-    print(bn)
+    print('找到的结点：', bn)
+    bt.update('a', 'z', bt.mid)
+    print('广义表示：', end=' ')
+    bt.print_(bt.mid)
+    print()
