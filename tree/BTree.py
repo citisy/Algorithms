@@ -43,7 +43,7 @@ class BTree(BLinkList):
         :param arr: 数的数组形式，下标从1开始
         '''
         if arr[0] != 'flag':
-            return print('array must be start from the index of 1')
+            return print('array must be start from the index of 1!')
         if not self.is_empty():
             return print('array is not empty!')
         else:

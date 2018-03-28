@@ -17,11 +17,13 @@ class BSTree(BTree):
     # 插入一个叶子结点
     # 非递归
     def inserst(self, item):
+        # 树为空，作为根结点插入
         if self.is_empty():
             self.mid = BNode(item)
+        # 非空
         else:
-            t = self.mid
             # 循环往下查询，较小则往左走，较大则往右走，直至低端
+            t = self.mid
             while t:
                 if item < t.data:
                     p = t
