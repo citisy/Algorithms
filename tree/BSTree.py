@@ -10,8 +10,9 @@ from BTree import BTree
 
 class BSTree(BTree):
     '''
-    inserst(item, bn): 插入一个叶子结点
-    delete(item, bn): 删除一个结点
+    functions:
+        inserst(item, bn): 插入一个叶子结点
+        delete(item, bn): 删除一个结点
     '''
 
     # 插入一个叶子结点
