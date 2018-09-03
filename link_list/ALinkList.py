@@ -1,26 +1,25 @@
-# -*- coding: utf-8 -*-
-
-# 创建一个保存data和next的对象，模拟单链表
+"""创建一个保存data和next的对象，模拟单链表"""
 
 
-class Node():
+class Node(object):
     def __init__(self, data, next=None):
-        '''
+        """
         data: 数据域
         next: 结点指针
-        '''
+        """
         self.data = data
         self.next = next
 
     def __repr__(self):
-        '''
-        print(Node)=>data
-        '''
+        """
+        print(Node)
+            >> data
+        """
         return str(self.data)
 
 
-class LinkList():
-    '''
+class LinkList(object):
+    """
     functions：
         is_empty(): 判断是否为空
         init(data): 初始化单链表
@@ -34,29 +33,31 @@ class LinkList():
         sort(): 对单链表进行排序
         delete(pos): 删除第pos个元素
         clear(): 清空单链表
-    '''
+    """
+
     def __init__(self):
-        self.head = None  # 头结点
+        self.head = None  # head node
 
     # 判断是否为空
     def is_empty(self):
-        return self.head == None
+        return self.head is None
 
     # 初始化单链表
     def init(self, data):
         if self.is_empty():
-            self.head = Node(data[0])  # 初始化头结点
+            self.head = Node(data[0])  # init head node as data[0]
             p = self.head
+            # traverse the data and made it become node's next
             for i in data[1:]:
                 p.next = Node(i)
-                p = p.next  # 结点指针指向下一结点
+                p = p.next
         return print('init successfully!')
 
     # 返回单链表长度
     def lenth(self):
         if self.is_empty():
             print('linklist is empty')
-            return None
+            return -1
         i = 1
         p = self.head
         while p.next:
@@ -69,10 +70,10 @@ class LinkList():
         # 判断pos是否符合要求
         if pos < 1:
             print('error: pos<1')
-            exit(1)
+            return -1
         elif pos > self.lenth():
             print('error: pos out of range')
-            exit(1)
+            return -1
         i = 1
         p = self.head
         while p:
@@ -98,23 +99,24 @@ class LinkList():
                 return pos
             pos += 1
         print('not found!')
-        return None
+        return -1
 
     # 更新第pos个结点
     def update(self, pos, item):
         # 判断pos是否符合要求
         if pos < 1:
             print('error: pos<1')
-            exit(1)
+            return -1
         elif pos > self.lenth():
             print('error: pos out of range')
-            exit(1)
+            return -1
         i = 1
         p = self.head
         while p:
             if i == pos:
                 p.data = item
-                return print('update successfully!')
+                print('update successfully!')
+                return
             i += 1
             p = p.next
 
@@ -123,24 +125,26 @@ class LinkList():
         # 判断pos是否符合要求
         if pos < 0:
             print('error: pos<0')
-            exit(1)
+            return -1
         elif pos > self.lenth():
             print('error: pos out of range')
-            exit(1)
+            return -1
         # 插入元素创建新结点
         newp = Node(item)
         # 插入到表头
         if pos == 0:
             newp.next = self.head.next
             self.head.next = newp
-            return print('insert successfully!')
+            print('insert successfully!')
+            return
         i = 1
         p = self.head
         while p:
             if i == pos:
                 newp.next = p.next
                 p.next = newp
-                return print('insert successfully!')
+                print('insert successfully!')
+                return
             p = p.next
             i += 1
 
@@ -181,17 +185,18 @@ class LinkList():
                 else:
                     q.next = cp
             cp = xp.next
-        return print('sort successfully!')
+        print('sort successfully!')
+        return
 
     # 删除第pos个元素
     def delete(self, pos):
         # 判断pos是否符合要求
         if pos < 0:
             print('error: pos<0')
-            exit(1)
+            return -1
         elif pos > self.lenth():
             print('error: pos out of range')
-            exit(1)
+            return -1
         # 删除表头结点
         elif pos == 0:
             q = self.head.next
@@ -218,7 +223,8 @@ class LinkList():
             del cp
             cp = np
         self.head = None
-        return print('clear successfully!')
+        print('clear successfully!')
+        return
 
 
 if __name__ == '__main__':
@@ -237,3 +243,17 @@ if __name__ == '__main__':
     link.traverse()
     link.clear()
     print(link.is_empty())
+
+"""
+init successfully!
+0 1 2 3 4 
+linklist's length:  5
+update successfully!
+delete successfully!
+insert successfully!
+0 1 5 7 4 
+sort successfully!
+0 1 4 5 7 
+clear successfully!
+True
+"""

@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from ALinkList import LinkList
+from link_list.ALinkList import LinkList
 
 
 # 用单链表实现多项式求和：p=a0+a1x^1+...+anx^n

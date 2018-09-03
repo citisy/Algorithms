@@ -1,59 +1,28 @@
-# -*- coding: utf-8 -*-
+"""堆，一颗完全二叉树，宜采用顺序存储，这里使用链式存储
+基本特征：小根堆：根<左孩子or右孩子，大根堆：根>左孩子or右孩子
+"""
 
-# 堆，一颗完全二叉树，宜采用顺序存储，这里使用链式存储
-# 基本特征：小根堆：根<左孩子or右孩子，大根堆：根>左孩子or右孩子
-
-import sys
-sys.path.append('../link_list')
-from BLinkList import BNode
-from BTree import BTree
+from tree.BTree import *
 
 
 # 小根堆
 class Heap(BTree):
-    '''
+    """
     functions:
-        inserst(item, bn): 插入一个叶子结点
-        delete(item, bn): 删除一个结点
-    '''
+        insert(item, bn): insert an item
+        delete(item, bn): delete an item
+    """
 
     def __init__(self):
         super(Heap, self).__init__()
-        self.h = [BNode('')]  # 堆的存储映象
+        self.h = [BNode(None)]  # 堆的存储映象
 
-    # 重写父类方法
     def init(self, arr):
-        super().init(arr)
-        self.__creat_h()
-
-    # 按层遍历初始化堆的存储映象
-    def __creat_h(self):
-        front = 0  # 队首指针
-        rear = 0  # 队尾指针
-        maxsize = 30  # 队列的数组长度
-        q = ['' for _ in range(maxsize)]  # 队列数组
-        # 根结点入队
-        if self.mid and self.mid.data != '':
-            rear = (rear + 1) % maxsize
-            q[rear] = self.mid
-        # 队列为非空时
-        while front != rear:
-            front = (front + 1) % maxsize
-            # 依次出队
-            p = q[front]
-            self.h.append(p)
-            # 附属的左右孩子依次入队
-            # 左孩子入队
-            if p.left and p.left.data != '':
-                rear = (rear + 1) % maxsize
-                q[rear] = p.left
-            # 右孩子入队
-            if p.right and p.right.data != '':
-                rear = (rear + 1) % maxsize
-                q[rear] = p.right
+        for i in arr:
+            self.insert(i)
 
     # 插入一个叶子结点
-    def inserst(self, item):
+    def insert(self, item):
         # 堆为空，作为根结点插入
         if self.is_empty():
             self.mid = BNode(item)
@@ -69,28 +38,22 @@ class Heap(BTree):
             else:
                 self.h[n // 2].right = newp
             self.h.append(newp)
-            # 较小，与双亲结点互换位置
+            # compared with the parent, if the item is small, swap them, then, repeat the action
             while n != 1 and item < self.h[n // 2].data:
                 self.h[n].data, self.h[n // 2].data = self.h[n // 2].data, self.h[n].data
                 n = n // 2
 
     # 删除堆顶结点，并返回堆顶元素
     def delete(self):
-        n = len(self.h) - 1
-        # 堆为空
-        if n == 0:
-            return 'heap is empty!', False
+        n = len(self.h) - 1  # index 0 of h is None, so h's real len must sub 1
+        if n == 0:   # heap is empty
+            return None
         # 非空
         else:
-            # 弹出堆顶元素
-            bn = self.mid.data
-            # 堆尾元素移到堆顶
-            if n > 0:
-                self.mid.data = self.h[-1].data
-                self.h[-1] = None
-                self.h.pop()
+            bn_data = self.mid.data  # return data
+            self.mid.data = self.h.pop().data   # tail of heap move to head
             # 比较下移
-            n = len(self.h) - 1
+            n -= 1
             i = 1
             # h => 存储较小的孩子
             # 如果有右结点，两者比较
@@ -103,7 +66,7 @@ class Heap(BTree):
             elif i <= n and self.h[i].left:
                 h = self.h[i].left
             # 不是叶子结点，且值较大
-            while i*2 <= n and self.h[i] and self.h[i].data > h.data:
+            while i * 2 <= n and self.h[i] and self.h[i].data > h.data:
                 self.h[i].data, h.data = h.data, self.h[i].data
                 # 如果有右结点，两者比较
                 if self.h[i].right:
@@ -115,18 +78,25 @@ class Heap(BTree):
                 elif self.h[i].left:
                     h = self.h[i].left
                 i *= 2
-            return bn, True
+            return bn_data
+
 
 if __name__ == '__main__':
     arr = [73, 26, 48, 18, 60, 35, 50]
     bt = Heap()
-    for i in arr:
-        bt.inserst(i)
+    bt.init(arr)
+
     print('广义表:', end=' ')
     bt.print_(bt.mid)
     print()
-    bn, flag = bt.delete()
-    print(bn, end=' ')
-    while flag:
-        bn, flag = bt.delete()
-        print(bn, end=' ')
+
+    while 1:
+        bn_data = bt.delete()
+        if bn_data is None:
+            break
+        print(bn_data, end=' ')
+
+"""
+广义表: 18(26(73,60),35(48,50))
+18 26 35 48 50 60 73
+"""

@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
+"""线索二叉树，线索化的二叉树
+基本特征：
+"""
 
-# 线索二叉树，线索化的二叉树
-# 基本特征：
-
-from BTree import BTree
+from tree.BTree import *
 
 
 class TTree(BTree):

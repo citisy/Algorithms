@@ -1,13 +1,8 @@
-# -*- coding: utf-8 -*-
+"""平衡二叉树，二叉搜索树的改进，又称ALV树
+基本特征：比一般的结点多了两个域，左右线索域，取真时指向线索，取假时指向孩子
+"""
 
-# 平衡二叉树，二叉搜索树的改进，又称ALV树
-# 基本特征：比一般的结点多了两个域，左右线索域，取真时指向线索，取假时指向孩子
-
-import sys
-sys.path.append('../link_list')
-from BLinkList import BNode
-from BTree import BTree
-
+from tree.BTree import *
 
 class TTNode(BNode):
     def __init__(self, ltag=0, rtag=0):

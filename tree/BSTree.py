@@ -1,23 +1,24 @@
-# -*- coding: utf-8 -*-
+"""二叉搜索树，又称二叉排序树
+基本特征：左孩子<根<右孩子，中序遍历为有序序列
+"""
 
-# 二叉搜索树，又称二叉排序树
-# 基本特征：左孩子<根<右孩子，中序遍历为有序序列
+from tree.BTree import *
 
-import sys
-sys.path.append('../link_list')
-from BLinkList import BNode
-from BTree import BTree
 
 class BSTree(BTree):
-    '''
+    """
     functions:
-        inserst(item, bn): 插入一个叶子结点
+        insert(item, bn): 插入一个叶子结点
         delete(item, bn): 删除一个结点
-    '''
+    """
+
+    def init(self, arr):
+        for i in arr:
+            self.insert(i)
 
     # 插入一个叶子结点
     # 非递归
-    def inserst(self, item):
+    def insert(self, item):
         # 树为空，作为根结点插入
         if self.is_empty():
             self.mid = BNode(item)
@@ -40,7 +41,8 @@ class BSTree(BTree):
     # 删除一个结点
     def delete(self, item):
         if self.is_empty():
-            return print('tree is empty!')
+            print('tree is empty!')
+            return
         # 循环往下查询，较小则往左走，较大则往右走，直至找到要删除的点
         t = self.mid
         flag = 'm'  # 保存下一步是左走还是右走
@@ -56,14 +58,17 @@ class BSTree(BTree):
                 flag = 'r'
             else:
                 break
+        if t is None:
+            print('cant find item!')
+            return
         # 根结点左子树为空，将右子树连接该结点对应的位置，或其为叶子结点，直接删除
-        if t.left is None or t.left.data == '':
+        if t.left is None:
             if flag == 'l':
                 p.left = t.right
             elif flag == 'r':
                 p.right = t.right
         # 根结点右子树为空，将左子树返回该结点对应的位置
-        elif t.right is None or t.right.data == '':
+        elif t.right is None:
             if flag == 'l':
                 p.left = t.left
             elif flag == 'r':
@@ -89,18 +94,30 @@ class BSTree(BTree):
 if __name__ == '__main__':
     arr = [38, 26, 62, 94, 35, 50, 28, 55]
     bt = BSTree()
-    for i in arr:
-        bt.inserst(i)
+    bt.init(arr)
+
     print('广义表:', end=' ')
     bt.print_(bt.mid)
     print()
+
     print('中序遍历:', end=' ')
+    bt.init_order()
     bt.inorder(bt.mid)
-    print()
+    print(bt.order)
+
     bt.delete(38)
     print('删除后广义表:', end=' ')
     bt.print_(bt.mid)
     print()
+
     print('删除后中序遍历:', end=' ')
+    bt.init_order()
     bt.inorder(bt.mid)
-    print()
+    print(bt.order)
+
+"""
+广义表: 38(26(,35(28)),62(50(,55),94))
+中序遍历: [26, 28, 35, 38, 50, 55, 62, 94]
+删除后广义表: 35(26(,28),62(50(,55),94))
+删除后中序遍历: [26, 28, 35, 50, 55, 62, 94]
+"""
