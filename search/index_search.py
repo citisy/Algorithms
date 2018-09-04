@@ -12,13 +12,13 @@ class IndexItem(object):
 
 
 def indsch(ml, il, k1, k2):
-    '''
+    """
     :param ml: 主表
     :param il: 索引表
     :param k1: 索引值
     :param k2: 查找值
     :return: 查找成功返回元素的下标，否则返回-1
-    '''
+    """
     n = len(il.index)
     if n == 0:
         return -1

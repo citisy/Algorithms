@@ -3,7 +3,7 @@
 哈夫曼树不唯一
 """
 
-from tree.BTree import *
+from tree.BinaryTree import *
 
 
 class HTree(BTree):

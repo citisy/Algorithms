@@ -2,7 +2,7 @@
 基本特征：小根堆：根<左孩子or右孩子，大根堆：根>左孩子or右孩子
 """
 
-from tree.BTree import *
+from tree.BinaryTree import *
 
 
 # 小根堆

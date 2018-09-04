@@ -2,7 +2,7 @@
 基本特征：左孩子<根<右孩子，中序遍历为有序序列
 """
 
-from tree.BTree import *
+from tree.BinaryTree import *
 
 
 class BSTree(BTree):

@@ -41,9 +41,11 @@ class BTree(BLinkList):
         :param arr: list, item index begin at 1, empty item filled with ''
         """
         if arr[0] != 'flag':
-            return print('array must be start from the index of 1!')
+            print('array must be start from the index of 1!')
+            return -1
         if not self.is_empty():
-            return print('array is not empty!')
+            print('array is not empty!')
+            return -1
         else:
             self.mid = BNode(arr[1])
             # 二叉链表的存储映象
@@ -61,7 +63,8 @@ class BTree(BLinkList):
                 else:
                     self.rappend(arr[i], p[i // 2])
                     p[i] = p[i // 2].right
-        return print('init successfully!')
+        print('init successfully!')
+        return 1
 
     # 打印出二叉树的广义表
     # 根本思想为前序遍历
@@ -184,6 +187,7 @@ if __name__ == '__main__':
     for i in index:
         a[i] = item[k]
         k += 1
+
     bt = BTree()
     bt.init(a)
     print('广义表示：', end=' ')
