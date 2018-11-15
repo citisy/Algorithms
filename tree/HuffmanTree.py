@@ -19,15 +19,18 @@ class HTree(BTree):
         self.h_dic = {}
 
     # 初始化
-    def init(self, t, f_):
+    def init(self, dic):
         """
-        :param t: 结点
-        :param f: 权值
+        :param dic: the define of dic is different from which in BTree
+                    the k-v of dic means data-weight
         :return:
         """
+        t = []
+        f = []
+        for k, v in dic.items():
+            t.append(k)
+            f.append(v)
         n = len(t)
-        f = f_.copy()  # 转存数组，避免原数组数据被破坏
-        # 把序列转换成结点形式
         t2n = []
         for i in range(n):
             t2n.append(BNode([t[i], f[i]]))
@@ -81,17 +84,20 @@ class HTree(BTree):
 
 
 if __name__ == '__main__':
-    t = ['a', 'b', 'c', 'd', 'e', 'f']
-    f = [4, 2, 6, 8, 3, 2]
-    a = [t, f]
+    dic = {'a': 4, 'b': 2, 'c': 6, 'd': 8, 'e': 3, 'f': 2}
     bt = HTree()
+    bt.init(dic)
 
-    bt.init(t, f)
+    # print('哈夫曼树：')
+    # bt.show(bt.mid)
+    # print()
+
     print('wpl:', bt.wpl(bt.mid))
 
     print('哈夫曼编码：')
     bt.code(bt.mid)
     print(bt.h_dic)
+
 
 """
 wpl: 61

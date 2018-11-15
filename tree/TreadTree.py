@@ -22,13 +22,12 @@ class TTree:
         self.mid = None  # middle node or root node
 
     # 初始化
-    def init(self, arr):
-        """
-        :param arr: list, item index begin at 1, empty item filled with ''
-        """
-        if arr[0] != 'flag':
-            print('array must be start from the index of 1!')
-            return -1
+    def init(self, dic):
+        max_key = max(dic)
+        arr = ['' for _ in range(dic[max_key] + 1)]
+        arr[0] = 'flag'
+        for k, v in dic.items():
+            arr[v] = k
         if not self.is_empty():
             print('array is not empty!')
             return -1
@@ -72,7 +71,7 @@ class TTree:
         if bn:
             if bn.ltag == 0:
                 self.inorder(bn.left)
-            self.order.append([bn.data, bn.ltag, bn.rtag, bn.left.data, bn.right.data])
+            self.order.append([bn.data, [bn.left.data, bn.ltag], [bn.right.data, bn.rtag]])
             if bn.rtag == 0:
                 self.inorder(bn.right)
 
@@ -110,22 +109,17 @@ class TTree:
 
 
 if __name__ == '__main__':
-    a = ['' for _ in range(15)]
-    item = ['flag', 'a', 'b', 'e', 'c', 'd', 'f', 'g']
-    index = [0, 1, 2, 3, 4, 5, 7, 14]
-    k = 0
-    for i in index:
-        a[i] = item[k]
-        k += 1
-
+    dic = {'a': 1, 'b': 2, 'e': 3, 'c': 4, 'd': 5, 'f': 7, 'g': 14}
     tt = TTree()
-    tt.init(a)
+    tt.init(dic)
+
     tt.init_order()
 
+    print('中序遍历：')
     tt.inorder(tt.mid)
     print(tt.order)
 
 """
-init successfully!
-[['c', 1, 1, 'a', 'b'], ['b', 0, 0, 'c', 'd'], ['d', 1, 1, 'b', 'a'], ['a', 0, 0, 'b', 'e'], ['e', 1, 0, 'a', 'f'], ['g', 1, 1, 'e', 'f'], ['f', 0, 1, 'g', 'a']]
+中序遍历：
+[['c', ['a', 1], ['b', 1]], ['b', ['c', 0], ['d', 0]], ['d', ['b', 1], ['a', 1]], ['a', ['b', 0], ['e', 0]], ['e', ['a', 1], ['f', 0]], ['g', ['e', 1], ['f', 1]], ['f', ['g', 0], ['a', 1]]]
 """

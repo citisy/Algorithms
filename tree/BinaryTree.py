@@ -35,36 +35,27 @@ class BTree(BLinkList):
     def init_order(self):
         self.order = []
 
-    # 初始化树
-    def init(self, arr):
-        """
-        :param arr: list, item index begin at 1, empty item filled with ''
-        """
-        if arr[0] != 'flag':
-            print('array must be start from the index of 1!')
-            return -1
+    def init(self, dic):
+        max_key = max(dic)
+        arr = [None for _ in range(dic[max_key] + 1)]
+        for k, v in dic.items():
+            arr[v] = k
         if not self.is_empty():
             print('array is not empty!')
             return -1
         else:
             self.mid = BNode(arr[1])
             # 二叉链表的存储映象
-            # even is left, odd is right, and 1 is mid node
-            p = [BNode(None) for _ in range(len(arr))]
-            p[1] = self.mid
-            for i in range(2, len(arr)):
-                if arr[i] == '':
-                    continue
-                # 左孩子
-                if i % 2 == 0:
-                    self.lappend(arr[i], p[i // 2])
-                    p[i] = p[i // 2].left
-                # 右孩子
-                else:
-                    self.rappend(arr[i], p[i // 2])
-                    p[i] = p[i // 2].right
+            # even is left child, odd is right child, and 1 is mid node
+            p = [BNode(None) for _ in range(len(arr))]  # don't use [BNode(None)] * len(arr)
+            for i in range(1, len(arr)):
+                if arr[i] is not None:
+                    p[i].data = arr[i]
+        self.p = p
+        self.mid = self.get_mid(p)
+        self.array = self.get_array(p)
         print('init successfully!')
-        return 1
+        return True
 
     # 打印出二叉树的广义表
     # 根本思想为前序遍历
@@ -81,6 +72,24 @@ class BTree(BLinkList):
                     self.print_(bn.right)
                 # 左右孩子都遍历完，打印')'
                 print(')', end='')
+
+    def show(self, bn, dep=0, leng=[]):
+        if bn:
+            print(bn.data, end='')
+            if bn.left or bn.right:
+                if dep >= len(leng):
+                    leng.append(len(str(bn.data)))
+                else:
+                    leng[dep] = max(leng[dep], len(str(bn.data)))
+                dep += 1
+                print(' -- ', end='')
+                self.show(bn.left, dep, leng)
+                if bn.right:
+                    s = ''
+                    for i in range(dep):
+                        s += ' ' * (leng[i] + 4)
+                    print('\n%s|- ' % s[:-3], end='')
+                    self.show(bn.right, dep, leng)
 
     # 中序遍历
     # 先访问左孩子，再打印根结点，最后访问右孩子
@@ -156,42 +165,28 @@ class BTree(BLinkList):
                 return depr + 1
 
     # 查找某一元素是否存在
-    def find(self, item, bn):
-        if self.is_empty():
-            print('tree is empty!')
-            return -1
-        if bn.data == item:
-            self.bn = bn
-            return True
-        if bn.left and self.find(item, bn.left):
-            return True
-        if bn.right and self.find(item, bn.right):
-            return True
-        return False
-
-    # 获取当前结点
-    def get_bn(self):
-        return self.bn
+    def find(self, item):
+        for i in self.p:
+            if item == i.data:
+                return i
+        return None
 
     # 更新一个结点
     def update(self, item, change_item, bn):
-        self.find(item, bn)
-        self.bn.data = change_item
+        b = self.find(item)
+        b.data = change_item
 
 
 if __name__ == '__main__':
-    a = ['' for _ in range(15)]
-    item = ['flag', 'a', 'b', 'e', 'c', 'd', 'f', 'g']
-    index = [0, 1, 2, 3, 4, 5, 7, 14]
-    k = 0
-    for i in index:
-        a[i] = item[k]
-        k += 1
-
+    item_index = {'a': 1, 'b': 2, 'e': 3, 'c': 4, 'd': 5, 'f': 7, 'g': 14}
     bt = BTree()
-    bt.init(a)
+    bt.init(item_index)
     print('广义表示：', end=' ')
     bt.print_(bt.mid)
+    print()
+
+    print('树形结构：')
+    bt.show(bt.mid)
     print()
 
     print('前序遍历:', end=' ')
@@ -216,19 +211,21 @@ if __name__ == '__main__':
 
     print('树的深度为：', bt.depth(bt.mid))
 
-    bt.find('g', bt.mid)
-    bn = bt.get_bn()
-    print('找到的结点：', bn)
+    print('找到的结点：', bt.find('g'))
 
     bt.update('a', 'z', bt.mid)
     print('替换 a 后广义表示：', end=' ')
     bt.print_(bt.mid)
     print()
 
-
 """
 init successfully!
 广义表示： a(b(c,d),e(,f(g)))
+树形结构：
+a -- b -- c
+       |- d
+  |- e -- 
+       |- f -- g
 前序遍历: ['a', 'b', 'c', 'd', 'e', 'f', 'g']
 中序遍历: ['c', 'b', 'd', 'a', 'e', 'g', 'f']
 后序遍历: ['c', 'd', 'b', 'g', 'f', 'e', 'a']

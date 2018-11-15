@@ -90,7 +90,6 @@ class BSTree(BTree):
             p2.right = t2.left
 
 
-
 if __name__ == '__main__':
     arr = [38, 26, 62, 94, 35, 50, 28, 55]
     bt = BSTree()
