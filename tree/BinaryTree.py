@@ -42,7 +42,7 @@ class BTree(BLinkList):
             arr[v] = k
         if not self.is_empty():
             print('array is not empty!')
-            return -1
+            return None
         else:
             self.mid = BNode(arr[1])
             # 二叉链表的存储映象

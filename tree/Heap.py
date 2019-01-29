@@ -15,7 +15,6 @@ class Heap(BTree):
 
     def __init__(self):
         super(Heap, self).__init__()
-        self.h = [BNode(None)]  # 堆的存储映象
 
     def init(self, arr):
         for i in arr:
@@ -25,64 +24,61 @@ class Heap(BTree):
     def insert(self, item):
         # 堆为空，作为根结点插入
         if self.is_empty():
-            self.mid = BNode(item)
-            self.h.append(self.mid)
+            self.p.append(BNode(None))
+            self.p.append(BNode(item))
         # 非空
         else:
-            # 找出堆尾
-            n = len(self.h)
+            n = len(self.p)
             # 把元素插到堆尾
-            newp = BNode(item)
-            if n % 2 == 0:
-                self.h[n // 2].left = newp
-            else:
-                self.h[n // 2].right = newp
-            self.h.append(newp)
+            self.p.append(BNode(item))
             # compared with the parent, if the item is small, swap them, then, repeat the action
-            while n != 1 and item < self.h[n // 2].data:
-                self.h[n].data, self.h[n // 2].data = self.h[n // 2].data, self.h[n].data
+            while n != 1 and item < self.p[n // 2].data:
+                self.p[n].data, self.p[n // 2].data = self.p[n // 2].data, self.p[n].data
                 n = n // 2
+        self.mid = self.get_mid(self.p)
 
     # 删除堆顶结点，并返回堆顶元素
     def delete(self):
-        n = len(self.h) - 1  # index 0 of h is None, so h's real len must sub 1
-        if n == 0:   # heap is empty
-            return None
-        # 非空
+        n = len(self.p) - 1  # index 0 of h is None, so h's real len must sub 1
+        if n == 0:      # heap is empty
+            bn_data = None
+        elif n == 1:    # only have mid node
+            bn_data = self.p.pop().data
+            self.mid = None
         else:
-            bn_data = self.mid.data  # return data
-            self.mid.data = self.h.pop().data   # tail of heap move to head
-            # 比较下移
-            n -= 1
+            bn_data = self.p[1].data
+            if n % 2 == 0:  # cut the line of parent to children
+                self.p[n // 2].left = None
+            else:
+                self.p[n // 2].right = None
+            self.p[1].data = self.p.pop().data  # tail of heap move to head
             i = 1
-            # h => 存储较小的孩子
-            # 如果有右结点，两者比较
-            if i <= n and self.h[i].right:
-                if self.h[i].left.data < self.h[i].right.data:
-                    h = self.h[i].left
-                else:
-                    h = self.h[i].right
-            # 只有左结点
-            elif i <= n and self.h[i].left:
-                h = self.h[i].left
-            # 不是叶子结点，且值较大
-            while i * 2 <= n and self.h[i] and self.h[i].data > h.data:
-                self.h[i].data, h.data = h.data, self.h[i].data
-                # 如果有右结点，两者比较
-                if self.h[i].right:
-                    if self.h[i].left.data < self.h[i].right.data:
-                        h = self.h[i].left
+            while i < n and self.p[i]:
+                if i * 2 + 1 < n:  # have right children
+                    if self.p[i * 2].data < self.p[i * 2 + 1].data:
+                        p = self.p[i * 2]
+                        j = i * 2
                     else:
-                        h = self.h[i].right
-                # 只有左结点
-                elif self.h[i].left:
-                    h = self.h[i].left
-                i *= 2
-            return bn_data
+                        p = self.p[i * 2 + 1]
+                        j = i * 2 + 1
+                elif i * 2 < n:  # have left children
+                    p = self.p[i * 2]
+                    j = i * 2
+                else:
+                    break
+                if self.p[i].data > p.data:
+                    self.p[i].data, p.data = p.data, self.p[i].data
+                i = j
+            self.mid = self.get_mid(self.p)
+        return bn_data
 
 
 if __name__ == '__main__':
-    arr = [73, 26, 48, 18, 60, 35, 50]
+    import random
+
+    arr = list(range(1, 11))
+    random.shuffle(arr)
+
     bt = Heap()
     bt.init(arr)
 
@@ -90,6 +86,11 @@ if __name__ == '__main__':
     bt.print_(bt.mid)
     print()
 
+    print('树状结构：')
+    bt.show(bt.mid)
+    print()
+
+    print('get data:', end=' ')
     while 1:
         bn_data = bt.delete()
         if bn_data is None:
@@ -97,6 +98,12 @@ if __name__ == '__main__':
         print(bn_data, end=' ')
 
 """
-广义表: 18(26(73,60),35(48,50))
-18 26 35 48 50 60 73
+广义表: 1(2(5(10,8),4(9)),3(6,7))
+树状结构：
+1 -- 2 -- 5 -- 10
+            |- 8
+       |- 4 -- 9
+  |- 3 -- 6
+       |- 7
+get data: 1 2 3 4 5 6 7 8 9 10 
 """
