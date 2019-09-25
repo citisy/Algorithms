@@ -16,12 +16,17 @@
     https://www.cnblogs.com/xudong-bupt/p/3433506.html
 """
 
-from search.TrieTree import TTree
+from TrieTree import TTree
 
 
-class act:
+class ACT:
     def __init__(self):
         self.tree = TTree()
+        self.char = []
+        self.word = []
+        self.children = []
+        self.fail = []
+        self.output = []
 
     def init(self, arr):
         self.tree.init(arr)
@@ -36,6 +41,7 @@ class act:
             for child in bn.children:
                 q.append([child, bn])
             self.add_fail(bn, parent)
+        self.tree2list()
 
     def add_fail(self, bn, parent):
         """levelorder traverse the tree, add the fail point"""
@@ -47,22 +53,6 @@ class act:
             parent = parent.fail  # can't find item in bn's fail's children, point to fail's fail
         if bn.fail is None:  # can't find item until the root, point to the root
             bn.fail = self.mid
-
-    def search(self, item):
-        bn = self.mid
-        words = []
-        for i, j in enumerate(item):
-            while 1:
-                n = self.get_bn(j, bn)
-                if n is self.mid:
-                    break
-                if n is not None:
-                    bn = n
-                    break
-                bn = bn.fail  # run it means find not success, turn to bn's fail
-            if bn.data[1] != 0:
-                words.append([bn.data[2], i + 1 - len(bn.data[2])])   # [word, start_index]
-        return words
 
     def get_bn(self, data, bn):
         """
@@ -80,15 +70,82 @@ class act:
         else:
             return None
 
+    def tree2list(self):
+        i = 1
+        p = [(self.mid, i)]
+        i += len(self.mid.children)
+        pp = []
+        while len(p) > 0:
+            pn, index = p.pop(0)
+            for child in pn.children:
+                p.append((child, i))
+                i += len(child.children)
+            pp.append(pn)
+            self.char.append(pn.data[0])
+            self.word.append(pn.data[2])
+            self.output.append(pn.data[1])
+            self.fail.append(pp.index(pn.fail))
+            self.children.append((index, index + len(pn.children)))
+
+    def search(self, item, index=False):
+        bn = self.mid
+        words = []
+        for i, data in enumerate(item):
+            while 1:
+                n = self.get_bn(data, bn)
+                if n is self.mid:
+                    break
+                if n is not None:
+                    bn = n
+                    break
+                bn = bn.fail  # run it means find not success, turn to bn's fail
+            if bn.data[1]:
+                if index:
+                    words.append([bn.data[2], i + 1 - len(bn.data[2])])   # [word, start_index]
+                else:
+                    words.append(bn.data[2])
+            if bn.fail.data[1]:
+                if index:
+                    words.append([bn.fail.data[2], i + 1 - len(bn.fail.data[2])])   # [word, start_index]
+                else:
+                    words.append(bn.fail.data[2])
+        return words
+
+    def fast_search(self, item):
+        bn = 0
+        words = []
+        for char in item:
+            while 1:
+                st, et = self.children[bn]
+                for n, c in enumerate(self.char[st: et]):
+                    if char == c:
+                        break
+                else:
+                    n = -1
+                if n != -1:
+                    bn = st + n
+                    break
+                else:
+                    if bn == 0:
+                        break
+                    bn = self.fail[bn]
+            if self.output[bn]:
+                words.append(self.word[bn])
+            if self.output[self.fail[bn]]:
+                words.append(self.word[self.fail[bn]])
+        return words
+
 
 if __name__ == '__main__':
     a = ['the', 'they', 'them', 'their', 'theirs', 'themselves', 'he', 'hey', 'se', 'self']
-    ac = act()
+    s = 'thuthemselveselftheirthey'
+    ac = ACT()
     ac.init(a)
 
-    words = ac.search('thuthemselveselftheir')
+    words = ac.fast_search(s)
     print(words)
 
 """
-[['the', 3], ['them', 4], ['themselves', 10], ['se', 11], ['self', 13], ['the', 16], ['their', 18]]
+result:
+[['the', 3], ['them', 3], ['themselves', 3], ['se', 12], ['self', 12], ['the', 16], ['their', 16]]
 """

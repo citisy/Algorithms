@@ -22,17 +22,15 @@ class TTree:
         self.cache = ['' for _ in range(20)]
 
     def init(self, arr):
-        for i, a in enumerate(arr):
+        for a in arr:
             bn = self.mid
             for j in a:
-                flag = 0
                 # traverse the children, if the item in the children, needn't add the item in the children
                 for child in bn.children:
                     if j == child.data[0]:
-                        flag = 1
                         break
-                if flag == 0:
-                    child = Node([j, 0, ''])
+                else:
+                    child = Node([j, 0, ''])    # [char, len, word]
                     bn.children.append(child)
                 bn = child
             bn.data[1] += 1  # when the word is end, the count++
