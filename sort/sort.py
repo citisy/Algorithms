@@ -40,7 +40,7 @@ class sort:
         if self.draw:
             ani = ArtistAnimation(self.fig, self.ims, interval=2000 // len(self.ims), blit=True,
                                   repeat_delay=1000, repeat=True)
-            # ani.save('img/bubble.gif', writer=Writer())
+            # ani.save('functions/bubble.gif', writer=Writer())
             plt.show()
 
         return a
@@ -84,7 +84,7 @@ class sort:
         if self.draw:
             ani = ArtistAnimation(self.fig, self.ims, interval=2000 // len(self.ims), blit=True,
                                   repeat_delay=1000, repeat=True)
-            # ani.save('img/straight_insert.gif', writer=Writer())
+            # ani.save('functions/straight_insert.gif', writer=Writer())
             plt.show()
 
         return a
@@ -134,7 +134,7 @@ class sort:
         if self.draw:
             ani = ArtistAnimation(self.fig, self.ims, interval=2000 // len(self.ims), blit=True,
                                   repeat_delay=1000, repeat=True)
-            # ani.save('img/shell.gif', writer=Writer())
+            # ani.save('functions/shell.gif', writer=Writer())
             plt.show()
 
         return a
@@ -169,7 +169,7 @@ class sort:
         if self.draw:
             ani = ArtistAnimation(self.fig, self.ims, interval=2000 // len(self.ims), blit=True,
                                   repeat_delay=1000, repeat=True)
-            ani.save('img/straight_select.gif', writer=Writer())
+            ani.save('functions/straight_select.gif', writer=Writer())
             plt.show()
 
         return a
@@ -185,7 +185,7 @@ class sort:
         if self.draw:
             ani = ArtistAnimation(self.fig, self.ims, interval=2000 // len(self.ims), blit=True,
                                   repeat_delay=1000, repeat=True)
-            # ani.save('img/quick_sort.gif', writer=Writer())
+            # ani.save('functions/quick_sort.gif', writer=Writer())
             plt.show()
 
         return a
@@ -298,7 +298,7 @@ class sort:
         if self.draw:
             ani = ArtistAnimation(self.fig, self.ims, interval=2000 // len(self.ims), blit=True,
                                   repeat_delay=1000, repeat=True)
-            # ani.save('img/heap.gif', writer=Writer())
+            # ani.save('functions/heap.gif', writer=Writer())
             plt.show()
 
         return a

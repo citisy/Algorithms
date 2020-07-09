@@ -1,17 +1,18 @@
 """二分查找。输入数据必须是顺序表，默认从小到大排序。"""
 
 
-# 在arr[l]-arr[h]中寻找k
 def binsch(arr, l, h, k):
+    """在arr[l]-arr[h]中寻找k"""
     if l <= h:
         # 寻找中点坐标
-        mid = (l+h)//2
+        mid = (l + h) // 2
+
         if k == arr[mid]:
             return mid
         elif k < arr[mid]:
-            return binsch(arr, l, mid-1, k)
+            return binsch(arr, l, mid - 1, k)
         else:
-            return binsch(arr, mid+1, h, k)
+            return binsch(arr, mid + 1, h, k)
     else:
         return -1
 
