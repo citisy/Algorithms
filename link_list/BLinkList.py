@@ -43,6 +43,19 @@ class BLinkList:
         """
         pass
 
+    def depth(self, bn):
+        """返回树的深度
+        depth = max(depl, depr) + 1"""
+        if bn is None:
+            return 0
+        else:
+            depl = self.depth(bn.left)
+            depr = self.depth(bn.right)
+            if depl > depr:
+                return depl + 1
+            else:
+                return depr + 1
+
     def init(self, dic: dict):
         """initial the LinkList
         :param dic: dict type, {item: site}
@@ -93,24 +106,19 @@ class BLinkList:
 
         return p[1]
 
-    def get_array(self, bn):
-        """
-        get a array like structure
-        :param p: store node list
-        :return: array
-        """
-        q = []  # 队列数组
-        q.append(bn)  # 根结点入队
-        array = [None]
-        while q:  # 队列为非空时
-            # 依次出队
-            p = q.pop(0)
-            if p:
-                array.append(p.data)
-                q.append(p.left if p.left else None)
-                q.append(p.right if p.right else None)
-            else:
-                array.append(None)
+    def get_array(self, bn: BNode):
+        """get a array like structure"""
+
+        def recursive(i, bn):
+            if bn:
+                array[i] = bn.data
+                recursive(2 * i, bn.left)
+                recursive(2 * i + 1, bn.right)
+
+        depth = self.depth(bn)
+        n = 2 ** depth - 1
+        array = [None] * n
+        recursive(1, bn)
 
         return array
 

@@ -165,25 +165,25 @@ class BinaryTree(BLinkList):
         recursive(bn)
         return ''.join(stack)
 
-    def draw(self):
+    def draw(self, bn):
         """图像可视化"""
+        array = self.get_array(bn)
         fig, ax = plt.subplots()
         r = 1
-        max_depth = self.depth(self.mid)
+        max_depth = self.depth(bn)
         max_width = 2 ** (max_depth - 1) * 3 * r
         circles, lines = [], []
-        get_xy = lambda depth, i: (max_width * (2 * i + 1) / 2 ** (depth + 1), -max_width * depth / max_depth)
+        get_xy = lambda depth, i: (max_width * (2 * i + 1) / 2 ** (depth + 1), -max_width * depth / max_depth / 2)
 
         for depth in range(max_depth):
-            for i, data in enumerate(self.array[2 ** depth: 2 ** (depth + 1)]):
+            for i, data in enumerate(array[2 ** depth: 2 ** (depth + 1)]):
                 if data:
                     x, y = get_xy(depth, i)
                     circles.append(mpatches.Circle((x, y), r))
                     ax.text(x, y, data, ha='center', va='center', size=15)
-                    if 2 ** (depth + 1) + 2 * i < len(self.array) and self.array[2 ** (depth + 1) + 2 * i]:  # 有左子树
+                    if 2 ** (depth + 1) + 2 * i < len(array) and array[2 ** (depth + 1) + 2 * i]:  # 有左子树
                         lines.append(((x, y), get_xy(depth + 1, 2 * i)))
-                    if 2 ** (depth + 1) + 2 * i + 1 < len(self.array) and self.array[
-                        2 ** (depth + 1) + 2 * i + 1]:  # 有右子树
+                    if 2 ** (depth + 1) + 2 * i + 1 < len(array) and array[2 ** (depth + 1) + 2 * i + 1]:  # 有右子树
                         lines.append(((x, y), get_xy(depth + 1, 2 * i + 1)))
 
         pc = plc.PatchCollection(circles)
@@ -273,19 +273,6 @@ class BinaryTree(BLinkList):
 
         return order
 
-    def depth(self, bn):
-        """返回树的深度
-        depth = max(depl, depr) + 1"""
-        if bn is None:
-            return 0
-        else:
-            depl = self.depth(bn.left)
-            depr = self.depth(bn.right)
-            if depl > depr:
-                return depl + 1
-            else:
-                return depr + 1
-
     def find(self, item):
         """查找某一元素是否存在"""
         for i in self.p:
@@ -317,7 +304,7 @@ if __name__ == '__main__':
     print('按层遍历:', bt.levelorder(bt.mid))
     print('找到的结点:', bt.find('g'))
 
-    bt.draw()
+    bt.draw(bt.mid)
 
     bt.update('a', 'z')
     print('替换 a 后广义表示：', bt.generalized(bt.mid))
@@ -328,7 +315,6 @@ if __name__ == '__main__':
                      post_order=bt.postorder(bt.mid),
                      )
     print('树形结构形式:\n', end=bt2.tree(bt2.mid) + '\n')
-
 
 """
 init successfully!
