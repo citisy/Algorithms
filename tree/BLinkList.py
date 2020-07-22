@@ -28,10 +28,11 @@ class BLinkList:
         clear(): 清空单链表
     """
 
-    def __init__(self):
+    def __init__(self, node=BNode):
         self.mid = None  # tree like structure
         self.array = []  # array like structure
         self.p = []  # store node list
+        self.node = node
 
     def is_empty(self):
         """judge weather the LinkList is empty or not"""
@@ -43,18 +44,24 @@ class BLinkList:
         """
         pass
 
-    def depth(self, bn):
-        """返回树的深度
+    def height(self, bn):
+        """返回节点的高度
         depth = max(depl, depr) + 1"""
         if bn is None:
             return 0
         else:
-            depl = self.depth(bn.left)
-            depr = self.depth(bn.right)
-            if depl > depr:
-                return depl + 1
-            else:
-                return depr + 1
+            depl = self.height(bn.left)
+            depr = self.height(bn.right)
+            return max(depl, depr) + 1
+
+    def depth(self, bn):
+        """返回节点的深度
+        节点的深度 = 根节点的高度 - 当前节点的高度"""
+        return self.height(self.mid) - self.depth(bn)
+
+    def is_leaf(self, bn):
+        """是否为叶子节点"""
+        return not bn.left and not bn.right
 
     def init(self, dic: dict):
         """initial the LinkList
@@ -76,9 +83,9 @@ class BLinkList:
         :param bn: which node's right child want to append
         """
         if self.is_empty():
-            self.mid = BNode(item)
+            self.mid = self.node(item)
         else:
-            newp = BNode(item)
+            newp = self.node(item)
             bn.right = newp
 
     def lappend(self, item, bn):
@@ -87,9 +94,9 @@ class BLinkList:
         :param bn: which node's left child want to append
         """
         if self.is_empty():
-            self.mid = BNode(item)
+            self.mid = self.node(item)
         else:
-            newp = BNode(item)
+            newp = self.node(item)
             bn.left = newp
 
     def get_mid(self, p):
@@ -115,8 +122,8 @@ class BLinkList:
                 recursive(2 * i, bn.left)
                 recursive(2 * i + 1, bn.right)
 
-        depth = self.depth(bn)
-        n = 2 ** depth - 1
+        depth = self.height(bn)
+        n = 2 ** depth
         array = [None] * n
         recursive(1, bn)
 

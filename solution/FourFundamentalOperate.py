@@ -88,8 +88,8 @@ def calculate(expression: str):
     expression = expression.replace(' ', '')  # 去掉多余的空格
     root = build_tree(expression)  # 获取二叉树的根节点
 
-    bt = BinaryTree()
-    print(bt.postorder(root))
+    # bt = BinaryTree()
+    # print(bt.postorder(root))
     # bt.draw(root)
 
     operate(root)  # 四则运算操作

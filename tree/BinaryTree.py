@@ -15,7 +15,7 @@
     n个结点的完全二叉树的深度：lb(n)+1（下取整）
 """
 
-from link_list.BLinkList import BNode, BLinkList
+from BLinkList import BLinkList
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib.collections as plc
@@ -37,19 +37,18 @@ class BinaryTree(BLinkList):
 
     def init(self, dic):
         if not self.is_empty():
-            print('The present tree is not empty!')
-            return False
+            raise ValueError('The present tree is not empty!')
 
-        max_len = max(dic.values())
+        max_len = max(dic)
         arr = [None for _ in range(max_len + 1)]
 
         for k, v in dic.items():
-            arr[v] = k
+            arr[k] = v
 
-        self.mid = BNode(arr[1])
+        self.mid = self.node(arr[1])
         # 二叉链表的存储映象
         # even is left child, odd is right child, and 1 is mid node
-        p = [BNode(None) for _ in range(len(arr))]  # don't use `[BNode(None)] * len(arr)`
+        p = [self.node(None) for _ in range(len(arr))]  # don't use `[BNode(None)] * len(arr)`
         for i in range(1, len(arr)):
             if arr[i] is not None:
                 p[i].data = arr[i]
@@ -57,32 +56,26 @@ class BinaryTree(BLinkList):
         self.p = p
         self.mid = self.get_mid(p)
         self.array = [_.data for _ in p]
-        print('init successfully!')
-        return True
 
-    def restore_tree(self, in_order: list, pre_order: list = None, post_order: list = None):
+    def init_by_order(self, in_order: list, pre_order: list = None, post_order: list = None):
         """输入中序序列以及先序或后序序列，还原二叉树"""
         if not in_order:
-            print('You must input in_order!')
-            return False
+            raise ValueError('You must input in_order!')
 
         if not (pre_order or post_order):
-            print('You input neither pre_order nor post_order!')
-            return False
+            raise ValueError('You input neither pre_order nor post_order!')
 
         if not self.is_empty():
-            print('The present tree is not empty!')
-            return False
+            raise ValueError('The present tree is not empty!')
 
         order = pre_order or post_order[::-1]
         if len(in_order) != len(order):
-            print('Input order must have the same length!')
-            return False
+            raise ValueError('Input order must have the same length!')
 
-        self.mid = BNode(order[0])
+        self.mid = self.node(order[0])
 
         flag = [0] * len(in_order)  # 标记数组
-        p = [BNode(None) for _ in range(len(in_order))]  # 存储映像
+        p = [self.node(None) for _ in range(len(in_order))]  # 存储映像
         idx = in_order.index(order[0])
         flag[idx] = 1
         p[idx] = self.mid
@@ -117,8 +110,7 @@ class BinaryTree(BLinkList):
             flag[idx] = 1
 
         self.array = self.get_array(self.mid)
-        self.p = [BNode(_) for _ in self.array]
-        return True
+        self.p = [self.node(_) for _ in self.array]
 
     def generalized(self, bn):
         """返回二叉树的广义表"""
@@ -161,29 +153,30 @@ class BinaryTree(BLinkList):
             else:
                 stack.pop(-1)
 
-        stack = []
-        recursive(bn)
-        return ''.join(stack)
+        if bn:
+            stack = []
+            recursive(bn)
+            return ''.join(stack)
 
     def draw(self, bn):
         """图像可视化"""
         array = self.get_array(bn)
         fig, ax = plt.subplots()
         r = 1
-        max_depth = self.depth(bn)
+        max_depth = self.height(bn)
         max_width = 2 ** (max_depth - 1) * 3 * r
         circles, lines = [], []
         get_xy = lambda depth, i: (max_width * (2 * i + 1) / 2 ** (depth + 1), -max_width * depth / max_depth / 2)
 
         for depth in range(max_depth):
             for i, data in enumerate(array[2 ** depth: 2 ** (depth + 1)]):
-                if data:
+                if data is not None:
                     x, y = get_xy(depth, i)
                     circles.append(mpatches.Circle((x, y), r))
                     ax.text(x, y, data, ha='center', va='center', size=15)
-                    if 2 ** (depth + 1) + 2 * i < len(array) and array[2 ** (depth + 1) + 2 * i]:  # 有左子树
+                    if 2 ** (depth + 1) + 2 * i < len(array) and array[2 ** (depth + 1) + 2 * i] is not None:  # 有左子树
                         lines.append(((x, y), get_xy(depth + 1, 2 * i)))
-                    if 2 ** (depth + 1) + 2 * i + 1 < len(array) and array[2 ** (depth + 1) + 2 * i + 1]:  # 有右子树
+                    if 2 ** (depth + 1) + 2 * i + 1 < len(array) and array[2 ** (depth + 1) + 2 * i + 1] is not None:  # 有右子树
                         lines.append(((x, y), get_xy(depth + 1, 2 * i + 1)))
 
         pc = plc.PatchCollection(circles)
@@ -290,11 +283,11 @@ class BinaryTree(BLinkList):
 
 
 if __name__ == '__main__':
-    item_index = {'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8, 'i': 9, 'j': 13}
+    index_item = {1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h', 9: 'i', 13: 'j'}
     bt = BinaryTree()
-    bt.init(item_index)
+    bt.init(index_item)
 
-    print('树的深度为:', bt.depth(bt.mid))
+    print('树的深度为:', bt.height(bt.mid))
     print('顺序表形式:', bt.array)
     print('广义表形式:', bt.generalized(bt.mid))
     print('树形结构形式:\n', end=bt.tree(bt.mid) + '\n')
@@ -310,14 +303,13 @@ if __name__ == '__main__':
     print('替换 a 后广义表示：', bt.generalized(bt.mid))
 
     bt2 = BinaryTree()
-    bt2.restore_tree(bt.inorder(bt.mid),
-                     pre_order=bt.preorder(bt.mid),
-                     post_order=bt.postorder(bt.mid),
-                     )
+    bt2.init_by_order(bt.inorder(bt.mid),
+                      pre_order=bt.preorder(bt.mid),
+                      post_order=bt.postorder(bt.mid),
+                      )
     print('树形结构形式:\n', end=bt2.tree(bt2.mid) + '\n')
 
 """
-init successfully!
 树的深度为: 4
 顺序表形式: [None, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', None, None, None, 'j']
 广义表形式: a(b(d(h,i),e),c(f(,j),g))
