@@ -7,11 +7,15 @@ python版的数据结构
 
 [算法复杂度](http://www.citisy.site/posts/30614.html)
 
+[数据结构-线性表](http://www.citisy.site/posts/38337.html)
+
 [数据结构-普通二叉树](http://www.citisy.site/posts/47120.html)
 
 [数据结构-特殊二叉树](http://www.citisy.site/posts/1307.html)
 
-[四则运算计算器](http://www.citisy.site/posts/24487.html)
+[树的应用-四则运算计算器](http://www.citisy.site/posts/24487.html)
+
+[数据结构-图](http://www.citisy.site/posts/41634.html)
 
 ## 目录结构
 
@@ -34,8 +38,6 @@ python版的数据结构
 │   ├── FourFundamentalOperate.py
 │   └── PolySum.py
 ├── sort
-│   ├── README.md
-│   ├── img
 │   └── sort.py
 └── tree
     ├── BLinkList.py
