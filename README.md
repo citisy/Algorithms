@@ -17,6 +17,8 @@ python版的数据结构
 
 [数据结构-图](http://www.citisy.site/posts/41634.html)
 
+[基础算法-排序算法](http://www.citisy.site/posts/52973.html)
+
 ## 目录结构
 
 ```
