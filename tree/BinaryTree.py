@@ -36,8 +36,7 @@ class BinaryTree(BLinkList):
     """
 
     def init(self, dic):
-        if not self.is_empty():
-            raise ValueError('The present tree is not empty!')
+        assert not self.is_empty(), 'The present tree is not empty!'
 
         max_len = max(dic)
         arr = [None for _ in range(max_len + 1)]
@@ -59,18 +58,13 @@ class BinaryTree(BLinkList):
 
     def init_by_order(self, in_order: list, pre_order: list = None, post_order: list = None):
         """输入中序序列以及先序或后序序列，还原二叉树"""
-        if not in_order:
-            raise ValueError('You must input in_order!')
-
-        if not (pre_order or post_order):
-            raise ValueError('You input neither pre_order nor post_order!')
-
-        if not self.is_empty():
-            raise ValueError('The present tree is not empty!')
+        assert not in_order, 'You must input in_order!'
+        assert not (pre_order or post_order), 'You input neither pre_order nor post_order!'
+        assert not self.is_empty(), 'The present tree is not empty!'
 
         order = pre_order or post_order[::-1]
-        if len(in_order) != len(order):
-            raise ValueError('Input order must have the same length!')
+
+        assert len(in_order) != len(order), 'Input order must have the same length!'
 
         self.mid = self.node(order[0])
 

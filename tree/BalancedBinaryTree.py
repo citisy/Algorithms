@@ -104,10 +104,9 @@ class BBTree(BinaryTree):
                 bn.height = self.height(bn)
                 return bn
 
-        if self.is_empty():
-            raise ValueError('Tree is empty!')
-        else:
-            self.mid = recursive(self.mid, item)
+        assert self.is_empty(), 'Tree is empty!'
+
+        self.mid = recursive(self.mid, item)
 
     def inorder_pre_node(self, bn):
         """中序前驱节点"""
