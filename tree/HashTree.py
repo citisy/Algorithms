@@ -17,46 +17,57 @@ class Node:
 
 class HTree:
     def __init__(self):
-        self.mid = Node(0)
-        self.creat_tree()
-
-    def creat_tree(self):
-        """
-        there, we define h(x) = x % p (where p is prime numbers) as the hash function
-        the tree's depth is 5, so we can fill 2*3*5*7 numbers
-        :return:
-        """
-        self.p_list = [2, 3, 5, 7]
-        bn_list = [self.mid]
-        for i, p in enumerate(self.p_list):
-            l = []
-            for bn in bn_list:
-                bn.children = [Node(0) for _ in range(p)]
-                l += bn.children
-            bn_list = l
+        self.mid = Node(None)
+        self.primes = [2, 3, 5, 7, 11, 13, 19, 23, 29]
 
     def init(self, arr):
         for a in arr:
-            bn = self.mid
-            for p in self.p_list:
-                x = a % p   # which node will be gone to
-                a = a // p
-                bn = bn.children[x]
-                if a == 0:  # when a is 0, it can't go down
-                    bn.data = 1
-                    break
+            self.insert(a)
+
+    def insert(self, item):
+        item = item if isinstance(item, int) else ord(item)
+        bn = self.mid
+        p = Node(item)
+        for prime in self.primes:
+            mod = item % prime
+
+            if not bn.children:
+                bn.children = [None for _ in range(prime)]
+
+            if not bn.children[mod]:
+                bn.children[mod] = p
+                break
+
+            if bn.children[mod].data is None:
+                bn.children[mod].data = item
+                break
+
+            bn = bn.children[mod]
 
     def search(self, item):
+        item = item if isinstance(item, int) else ord(item)
         bn = self.mid
-        for p in self.p_list:
-            x = item % p
-            item = item // p
-            bn = bn.children[x]
-            if item == 0:
-                if bn.data == 1:
-                    return True
-                else:
-                    return False
+
+        for prime in self.primes:
+            mod = item % prime
+
+            if not bn.children:
+                return False
+
+            if not bn.children[mod]:
+                return False
+
+            elif bn.children[mod].data == item:
+                return bn
+
+            else:
+                bn = bn.children[mod]
+
+    def delete(self, item):
+        bn = self.search(item)
+        if bn:
+            bn.data = None
+            return True
 
 
 if __name__ == '__main__':
@@ -66,6 +77,10 @@ if __name__ == '__main__':
 
     print(h.search(72))
     print(h.search(73))
+
+    print(h.delete(45))
+    for i in a:
+        print(h.search(i))
 
 """
 True

@@ -19,40 +19,56 @@
 from TrieTree import TTree
 
 
-class ACT:
-    def __init__(self):
-        self.tree = TTree()
+class Node:
+    def __init__(self, char, word, children=None, fail=None):
+        self.char = char
+        self.word = word
+        self.children = children or []
+        self.fail = fail
+
+
+class ACT(TTree):
+    def __init__(self, node=Node):
+        super(ACT, self).__init__(node)
         self.char = []
         self.word = []
         self.children = []
         self.fail = []
-        self.output = []
+        self.mid.fail = self.mid
 
     def init(self, arr):
-        self.tree.init(arr)
-        self.mid = self.tree.mid
-        self.mid.fail = self.mid
+        super(ACT, self).init(arr)
+
         q = []
+
         for child in self.mid.children:  # in particular, the second floor's fail point to the mid node
             child.fail = self.mid
             q.append([child, self.mid])  # [child, parent]
+
         while len(q) != 0:
             bn, parent = q.pop(0)
+
             for child in bn.children:
                 q.append([child, bn])
+
             self.add_fail(bn, parent)
+
         self.tree2list()
 
     def add_fail(self, bn, parent):
         """levelorder traverse the tree, add the fail point"""
+
         while parent.fail is not parent:  # only root's fail point to his own
             for child in parent.fail.children:
-                if bn.data[0] == child.data[0]:  # bn's data -> [char, count, word]
+                if bn.char == child.char:  # bn's data -> [char, count, word]
                     bn.fail = child
                     return
             parent = parent.fail  # can't find item in bn's fail's children, point to fail's fail
-        if bn.fail is None:  # can't find item until the root, point to the root
+
+        else:  # can't find item until the root, point to the root
             bn.fail = self.mid
+
+        return bn
 
     def get_bn(self, data, bn):
         """
@@ -62,77 +78,93 @@ class ACT:
             data can't find and bn is not root -> None
         """
         for child in bn.children:
-            if data == child.data[0]:
+            if data == child.char:
                 bn = child
                 return bn
         if bn is self.mid:
             return bn
-        else:
-            return None
+
+    def match(self, item, index=False):
+        bn = self.mid
+        words = []
+        success = 0
+        for i, data in enumerate(item):
+            while 1:
+                for child in bn.children:
+                    if data == child.char:
+                        bn = child
+                        success = 1
+                        break
+
+                if bn is self.mid:
+                    break
+                elif success:
+                    success = 0
+                    break
+                else:
+                    bn = bn.fail
+
+            if bn.word:
+                if index:
+                    words.append((bn.word, i + 1 - len(bn.word)))  # [word, start_index]
+                else:
+                    words.append(bn.word)
+
+            if bn.fail.word:
+                if index:
+                    words.append((bn.fail.word, i + 1 - len(bn.fail.word)))  # [word, start_index]
+                else:
+                    words.append(bn.fail.word)
+        return words
 
     def tree2list(self):
         i = 1
         p = [(self.mid, i)]
         i += len(self.mid.children)
         pp = []
-        while len(p) > 0:
+        while p:
             pn, index = p.pop(0)
             for child in pn.children:
                 p.append((child, i))
                 i += len(child.children)
             pp.append(pn)
-            self.char.append(pn.data[0])
-            self.word.append(pn.data[2])
-            self.output.append(pn.data[1])
+            self.char.append(pn.char)
+            self.word.append(pn.word)
             self.fail.append(pp.index(pn.fail))
             self.children.append((index, index + len(pn.children)))
 
-    def search(self, item, index=False):
-        bn = self.mid
+    def fast_match(self, item, index=False):
+        idx = 0
         words = []
         for i, data in enumerate(item):
             while 1:
-                n = self.get_bn(data, bn)
-                if n is self.mid:
-                    break
-                if n is not None:
-                    bn = n
-                    break
-                bn = bn.fail  # run it means find not success, turn to bn's fail
-            if bn.data[1]:
-                if index:
-                    words.append([bn.data[2], i + 1 - len(bn.data[2])])   # [word, start_index]
-                else:
-                    words.append(bn.data[2])
-            if bn.fail.data[1]:
-                if index:
-                    words.append([bn.fail.data[2], i + 1 - len(bn.fail.data[2])])   # [word, start_index]
-                else:
-                    words.append(bn.fail.data[2])
-        return words
-
-    def fast_search(self, item):
-        bn = 0
-        words = []
-        for char in item:
-            while 1:
-                st, et = self.children[bn]
+                st, et = self.children[idx]
                 for n, c in enumerate(self.char[st: et]):
-                    if char == c:
+                    if data == c:
                         break
                 else:
                     n = -1
+
                 if n != -1:
-                    bn = st + n
+                    idx = st + n
+                    break
+                elif idx == 0:
                     break
                 else:
-                    if bn == 0:
-                        break
-                    bn = self.fail[bn]
-            if self.output[bn]:
-                words.append(self.word[bn])
-            if self.output[self.fail[bn]]:
-                words.append(self.word[self.fail[bn]])
+                    idx = self.fail[idx]
+
+            if self.word[idx]:
+                if index:
+                    words.append((self.word[idx], i + 1 - len(self.word[idx])))  # [word, start_index]
+                else:
+                    words.append(self.word[idx])
+
+            if self.word[self.fail[idx]]:
+                if index:
+                    words.append((self.word[self.fail[idx]], i + 1 - len(self.word[self.fail[idx]])))
+                else:
+                    words.append(self.word[self.fail[idx]])
+
         return words
 
 
@@ -141,11 +173,16 @@ if __name__ == '__main__':
     s = 'thuthemselveselftheirthey'
     ac = ACT()
     ac.init(a)
-
-    words = ac.fast_search(s)
-    print(words)
+    print(ac.tree(ac.mid))
+    print(ac.match(s, True))
+    print(ac.fast_match(s, True))
 
 """
-result:
-[['the', 3], ['them', 3], ['themselves', 3], ['se', 12], ['self', 12], ['the', 16], ['their', 16]]
+None(0)-->t(0)-->h(0)-->e(1)-->y(1)
+                           └-->m(1)-->s(0)-->e(0)-->l(0)-->v(0)-->e(0)-->s(1)
+                           └-->i(0)-->r(1)-->s(1)
+      └-->h(0)-->e(1)-->y(1)
+      └-->s(0)-->e(1)-->l(0)-->f(1)
+[('the', 3), ('he', 4), ('them', 3), ('se', 7), ('themselves', 3), ('se', 12), ('self', 12), ('the', 16), ('he', 17), ('their', 16), ('the', 21), ('he', 22), ('they', 21), ('hey', 22)]
+[('the', 3), ('he', 4), ('them', 3), ('se', 7), ('themselves', 3), ('se', 12), ('self', 12), ('the', 16), ('he', 17), ('their', 16), ('the', 21), ('he', 22), ('they', 21), ('hey', 22)]
 """
