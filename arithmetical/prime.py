@@ -87,11 +87,24 @@ def pollard_rho(a):
     return r
 
 
+def find_prime(max_n):
+    """寻找 [2,max_n] 区间内的质数"""
+
+    r = list(range(2, max_n + 1))
+    i = 0
+    while i < len(r):
+        r = r[:i] + list(filter(lambda x: x == r[i] or x % r[i], r[i:]))
+        i += 1
+
+    return r
+
+
 if __name__ == '__main__':
     # print(modular_exponentiation(7, 560, 561))
     # print(pseudo_prime(2, 27))
     # print(miller_rabin(5))
     # print(pollard_rho(5))
-    for i in range(2, 100):
-        # print(i, miller_rabin(i))
-        print(i, pollard_rho(i))
+    # for i in range(2, 100):
+    #     # print(i, miller_rabin(i))
+    #     print(i, pollard_rho(i))
+    print(find_prime(10000))

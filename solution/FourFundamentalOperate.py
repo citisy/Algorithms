@@ -1,4 +1,4 @@
-from tree.BinaryTree import *
+from tree.BLinkList import *
 
 
 def strip_parentheses(expression):

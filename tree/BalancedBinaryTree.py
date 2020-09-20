@@ -104,7 +104,7 @@ class BBTree(BinaryTree):
                 bn.height = self.height(bn)
                 return bn
 
-        assert self.is_empty(), 'Tree is empty!'
+        assert not self.is_empty(), 'Tree is empty!'
 
         self.mid = recursive(self.mid, item)
 
